@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title></title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+         rel="stylesheet"
+         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+         crossorigin="anonymous"
+      />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.js"></script>
+      <script>
+        $(function(){
+            //urls for each region
+            const africaUrl = 'https://www.cs.kent.ac.uk/people/staff/yh/api/country-data/countries/region/Africa'
+            const asiaUrl = 'https://www.cs.kent.ac.uk/people/staff/yh/api/country-data/countries/region/Asia'
+            const europeUrl = 'https://www.cs.kent.ac.uk/people/staff/yh/api/country-data/countries/region/Europe'
+            const americasUrl = 'https://www.cs.kent.ac.uk/people/staff/yh/api/country-data/countries/region/Americas'
+            const antarcticUrl = 'https://www.cs.kent.ac.uk/people/staff/yh/api/country-data/countries/region/Antarctic '
+            const oceaniaUrl  = 'https://www.cs.kent.ac.uk/people/staff/yh/api/country-data/countries/region/Oceania'
+          //displays the countries data from urls in a table 
+          
+            const showCountries = (data) => {
+                for(let i=0; i<data.length; i++){
+                    const countryData = data[i];
+                    const countryCode = countryData.code;
+           const countryFlag = countryData.flag;
+            const countryCapital = countryData.capital;
+            const countryPopulation = countryData.population;    
+            const countryArea = countryData.area;
+            const countryName = countryData.name;
+            const countryPopulationDensity = countryPopulation/countryArea;
+            const popDensR1 =  countryPopulationDensity.toFixed(2);
+            const row ='<tr><td>'+ countryCode +'</td><td><img src="'+ countryFlag +'" alt="Flag"></td><td>'+ countryName+ '</td><td>' +countryCapital + '</td><td>' + countryPopulation + '</td><td>' + countryArea +'</td><td>' + popDensR1 + '</td></tr>';
+            $('#ctb1').append(row); //adds it to the table 
+                }
+                 //displays the number of countries
+            }
+            //calls the url and displays the data
+            
+
+    $('#countries').change(function () {
+       
+        const selectedCountry = $(this).val();
+        let url; // switches to the country selected and then displays the data from the url
+        switch (selectedCountry) {
+            case 'africa':
+                
+                url = africaUrl;
+                break;
+            case 'asia':
+           
+                url = asiaUrl;
+                break;
+            case 'europe':
+            
+                url = europeUrl;
+                break;
+            case 'americas':
+           
+                url = americasUrl;
+                break;
+                case 'antarctic':
+                
+                url = antarcticUrl;
+                break;
+            case 'oceania':
+         
+                url = oceaniaUrl;
+                break;
+        }
+// calls the url and displays the data
+        $.getJSON(url, (data) => {
+            $('#tbody1').empty();
+            showCountries(data);
+            const countryNo = data.length;
+            $('#noCountry').text(countryNo);//displays the number of countries
+            const countryAreas = data.map(country => country.area); // assuming 'area' is the property holding the country area
+    const maxArea = Math.max(...countryAreas);
+    const getName = data.filter(country => country.area === maxArea).map(country => country.name);
+    $('#largestName').text(getName);
+        });
+    });
+});
+</script>
+      </head>
+      <body>
+       
+        <div class="d-flex justify-content-center align-items-center"> 
+    <h1 span style = "background-color: rgb(109, 109, 222)" > Details about Countries</h1>
+        </div>
+    <div class="container p-5 text-center w-50 rounded" style="background-color: #f8f9fa;">
+    <label for = "countries"> Choose a Country</label>
+    
+    <select name ="countries" id="countries">   
+     <option value = "africa">Africa</option>
+     <option value = "asia">Asia</option>
+     <option value = "europe">Europe</option>
+     <option value = "americas">Americas</option>
+     <option value = "antarctic">Antarctic</option>
+     <option value = "oceania">Oceania</option>
+    </select>
+    <p>The total number of Countries is <span id="noCountry"</span></p>
+    <p>The Name of the Largest Country is <span id = "largestName" </span> </p>
+    <p>The Name of the Most Populated Country is <span id = "mostPop" </span></p>
+     <table id = "ctb1" class="table text-center table-bordered" >
+    <thead class="table-light">
+    <tr>
+<th>Country Code</th>
+<th>Flag</th>
+<th>Name</th>
+<th>Capital</th>
+<th>Population</th>
+<th>Area</th>
+<th>Population Density</th>
+    </tr>
+</thead>
+<div class="container p-5 text-center w-50 rounded" style="background-color: #f8f9fa;">
+<tbody id = "tbody1" class= "text-center"></tbody>
+     </table>
+</div>
+      </body>
+      </html> 
